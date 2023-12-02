@@ -1,10 +1,11 @@
 import io
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from flask import Blueprint, jsonify, request, send_file
 from app.models.order import create_order, get_order, get_all_orders, update_order, delete_order, get_order_avg_days
 from bson import ObjectId
-import matplotlib
-matplotlib.use('Agg')
+
 bp = Blueprint('order', __name__, url_prefix='/api/orders')
 
 
@@ -65,6 +66,7 @@ def get_order_avg_supplier():
     plt.xticks(rotation=45)
     img_buffer = io.BytesIO()
     plt.savefig(img_buffer, format='png')
+    plt.clf()
     img_buffer.seek(0)
 
   # Codifica o buffer da imagem em base64

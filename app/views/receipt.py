@@ -1,9 +1,11 @@
+
+import matplotlib.pyplot as plt
 from flask import Blueprint, jsonify, request, send_file
 from app.models.receipt import create_receipt, get_receipt, get_all_receipts, update_receipt, delete_receipt, get_receipt_counts
 from bson import ObjectId
+
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import io
 bp = Blueprint('receipt', __name__, url_prefix='/api/receipts')
 
@@ -66,6 +68,7 @@ def counts_by_supplier_counts():
     plt.xticks(rotation=45)
     img_buffer = io.BytesIO()
     plt.savefig(img_buffer, format='png')
+    plt.clf()
     img_buffer.seek(0)
   
   # Codifica o buffer da imagem em base64
