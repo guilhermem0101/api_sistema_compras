@@ -32,6 +32,7 @@ def get_receipt_by_id(receipt_id):
         return jsonify({'message': 'receipt not found'}), 404
 
 
+
 @bp.route('/<receipt_id>', methods=['PUT'])
 def update_receipt_by_id(receipt_id):
     update_data = request.get_json()

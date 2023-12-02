@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models.supplier import create_supplier, get_supplier, get_all_suppliers, update_supplier, delete_supplier
+from app.models.supplier import create_supplier,get_supplier_byName, get_supplier, get_all_suppliers, update_supplier, delete_supplier
 from bson import ObjectId
 bp = Blueprint('supplier', __name__, url_prefix='/api/suppliers')
 
@@ -25,6 +25,18 @@ def get_supplier_by_id(supplier_id):
         return jsonify(supplier)
     else:
         return jsonify({'message': 'Supplier not found'}), 404
+    
+    
+@bp.route('/nome', methods=['GET'])
+def get_supplier_by_name():
+    supplier_name = request.args.get('nome')
+    supplier_cursor = get_supplier_byName(supplier_name)
+    if supplier_cursor:
+        supplier = [dict(supplier, _id=str(supplier['_id']))
+                    for supplier in supplier_cursor]
+        return jsonify(supplier)
+    else:
+        return jsonify({'message': 'supplier not found'}), 404
 
 
 @bp.route('/<supplier_id>', methods=['PUT'])
