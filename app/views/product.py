@@ -18,7 +18,7 @@ def get_products():
 
 
 @bp.route('/nomes', methods=['GET'])
-def get_products():
+def get_products_nomes():
     products_cursor = get_all_products_name()
     products = [dict(product, _id=str(product['_id']))
                 for product in products_cursor]

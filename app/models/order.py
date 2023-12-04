@@ -72,3 +72,8 @@ def get_order_avg_days():
    ]
    result = mongo.db.itens_pedidos.aggregate(pipeline)
    return list(result)
+
+
+def purchase_history():
+   from app import mongo
+   return mongo.db.itens_pedidos.find({}, {'subtotal': 1, 'data': 1, '_id': 0}).sort('data', 1)

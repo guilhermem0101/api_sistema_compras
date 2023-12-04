@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from flask import Blueprint, jsonify, request, send_file
 from app.models.receipt import create_receipt, get_receipt, get_all_receipts, update_receipt, delete_receipt, get_receipt_counts
 from bson import ObjectId
-from app.models.order import get_order_avg_days
+from app.models.order import get_order_avg_days, purchase_history
 import matplotlib
 matplotlib.use('Agg')
 import io
@@ -76,8 +76,8 @@ def counts_by_supplier_counts():
 
 @bp.route('/dash', methods=['GET'])
 def merged_graphics():
-   # First plot
-   fig, axs = plt.subplots(1, 2, figsize=(15, 8))
+  # First plot
+   fig, axs = plt.subplots(1, 2, figsize=(15, 12))
 
    orders_cursor = get_order_avg_days()
    suppliers = [order['_id'] for order in orders_cursor]
@@ -100,6 +100,16 @@ def merged_graphics():
    axs[1].set_ylabel('Número de Entregas')
    axs[1].set_title('Número de Entregas por Fornecedor')
    axs[1].set_xticklabels(suppliers, rotation=45)
+
+#    # Third plot
+#    receipts_cursor1 = purchase_history()
+#    total = [total['subtotal'] for total in receipts_cursor1]
+#    data = [total['data'] for total in receipts_cursor1]
+
+#    axs[1, 0].bar(data, total)
+#    axs[1, 0].set_xlabel('Data')
+#    axs[1, 0].set_ylabel('Subtotal')
+#    axs[1, 0].set_title('Subtotal por Data')
 
    img_buffer = io.BytesIO()
    plt.savefig(img_buffer, format='png')
