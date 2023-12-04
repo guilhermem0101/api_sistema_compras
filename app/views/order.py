@@ -69,5 +69,4 @@ def get_order_avg_supplier():
     plt.clf()
     img_buffer.seek(0)
 
-  # Codifica o buffer da imagem em base64
     return send_file(img_buffer, mimetype='image/png')

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from flask import Blueprint, jsonify, request, send_file
 from app.models.receipt import create_receipt, get_receipt, get_all_receipts, update_receipt, delete_receipt, get_receipt_counts
 from bson import ObjectId
-
+from app.models.order import get_order_avg_days
 import matplotlib
 matplotlib.use('Agg')
 import io
@@ -71,6 +71,41 @@ def counts_by_supplier_counts():
     plt.clf()
     img_buffer.seek(0)
   
-  # Codifica o buffer da imagem em base64
     return send_file(img_buffer, mimetype='image/png')
+
+
+@bp.route('/dash', methods=['GET'])
+def merged_graphics():
+   # First plot
+   fig, axs = plt.subplots(1, 2, figsize=(15, 8))
+
+   orders_cursor = get_order_avg_days()
+   suppliers = [order['_id'] for order in orders_cursor]
+   agv_days = [order['mediaDias'] for order in orders_cursor]
+
+   axs[0].bar(suppliers, agv_days)
+   axs[0].set_xlabel('Fornecedor')
+   axs[0].set_ylabel('média de dias')
+   axs[0].set_title('Prazo Médio de Entrega')
+   axs[0].set_xticklabels(suppliers, rotation=45)
+
+   # Second plot
+   receipts_cursor = get_receipt_counts()
+   suppliers = [receipt['_id'] for receipt in receipts_cursor]
+   delivery_counts = [receipt['quantidadeEntregas']
+                      for receipt in receipts_cursor]
+
+   axs[1].bar(suppliers, delivery_counts)
+   axs[1].set_xlabel('Fornecedor')
+   axs[1].set_ylabel('Número de Entregas')
+   axs[1].set_title('Número de Entregas por Fornecedor')
+   axs[1].set_xticklabels(suppliers, rotation=45)
+
+   img_buffer = io.BytesIO()
+   plt.savefig(img_buffer, format='png')
+   plt.clf()
+   img_buffer.seek(0)
+
+   return send_file(img_buffer, mimetype='image/png')
+
 

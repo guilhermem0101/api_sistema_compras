@@ -8,7 +8,7 @@ app.config['MONGO_URI'] = 'mongodb://localhost:27017/sis_compras'
 
 app.register_blueprint(supplier.bp)
 app.register_blueprint(receipt.bp)
-# app.register_blueprint(product.bp)
+app.register_blueprint(product.bp)
 app.register_blueprint(order.bp)
 
 mongo = PyMongo(app)
